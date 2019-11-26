@@ -4,7 +4,6 @@ import (
 	"log"
 	"gitlab-config-server/config"
 
-	"github.com/astaxie/beego"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
@@ -36,8 +35,8 @@ func init() {
 	}
 }
 func (m *BaseModel) Error(e error) {
-	beego.Error(e.Error())
+	log.Println("DB ERROR:", e.Error())
 }
 func (m *BaseModel) Info(msg string) {
-	beego.Info(msg)
+	log.Println("DB INFO:", msg)
 }

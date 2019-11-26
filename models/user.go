@@ -4,7 +4,7 @@ import (
 	"gitlab-config-server/helper"
 	"gitlab-config-server/config"
 	"encoding/json"
-	"github.com/astaxie/beego"
+	"log"
 )
 
 type User struct {
@@ -21,14 +21,14 @@ func (m *User) GetUserInfo(accessToken string) *User {
 	client := helper.Client(path)
 	resp, err := client.Get(config.GetString("GitLabDomain") + path + "?access_token=" + accessToken)
 	if err != nil {
-		beego.Error("获取用户出错：", err.Error())
+		log.Println("ERROR: 获取用户出错：", err.Error())
 		return nil
 	}
 	defer resp.Body.Close()
 	decode := json.NewDecoder(resp.Body)
 	var user User
 	if err := decode.Decode(&user); err != nil {
-		beego.Error("解析用户数据失败：", err.Error())
+		log.Println("ERROR: 解析用户数据失败：", err.Error())
 		return nil
 	}
 	return &user

@@ -3,8 +3,8 @@ package services
 import (
 	"gitlab-config-server/config"
 
-	"github.com/astaxie/beego"
 	"github.com/go-redis/redis"
+	"log"
 )
 
 var Redis *redis.Client
@@ -18,7 +18,7 @@ func init() {
 	})
 	pong, err := Redis.Ping().Result()
 	if err != nil {
-		beego.Error("redis init fail: ", err.Error())
+		log.Println("ERROR: redis init fail: ", err.Error())
 	}
-	beego.Info("redis init: ", pong)
+	log.Println("redis init: ", pong)
 }

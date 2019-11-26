@@ -3,8 +3,8 @@ package config
 import (
 	"os"
 
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/config"
+	"log"
 )
 
 var (
@@ -23,7 +23,7 @@ func init() {
 	var err error
 	appConfig, err = config.NewConfig("ini", "conf/app.conf")
 	if err != nil {
-		beego.Error("load conf/app.conf failed: " + err.Error())
+		log.Println("load conf/app.conf failed: " + err.Error())
 		return
 	}
 	env := os.Getenv("ENV")

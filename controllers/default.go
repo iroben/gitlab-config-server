@@ -169,14 +169,14 @@ func CreatePipeline(projectId int, ref string) bool {
 	log.Println("pipeline: ", GitLabDomain+"/api/v4/projects/"+strconv.Itoa(projectId)+"/pipeline?ref="+ref)
 	req, err := http.NewRequest("POST", GitLabDomain+"/api/v4/projects/"+strconv.Itoa(projectId)+"/pipeline", bytes.NewReader(bt))
 	if err != nil {
-		beego.Error("gitlab连接创建失败：", err.Error())
+		log.Println("ERROR: gitlab连接创建失败", err.Error())
 		return false
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Private-Token", GitLabToken)
 	resp, err := client.Do(req)
 	if err != nil {
-		beego.Error("gitlab连接执行失败：", err.Error())
+		log.Println("ERROR: gitlab连接执行失败：", err.Error())
 		return false
 	}
 	defer resp.Body.Close()
@@ -184,15 +184,15 @@ func CreatePipeline(projectId int, ref string) bool {
 	bt, _ = ioutil.ReadAll(resp.Body)
 	log.Println("pipeline resp: ", string(bt))
 	if err := json.Unmarshal(bt, &gitlabPipeline); err != nil {
-		beego.Error("gitlab pipeline失败：", err.Error())
+		log.Println("ERROR: gitlab pipeline失败：", err.Error())
 		return false
 	}
-	beego.Info("gitlab pipeline：", gitlabPipeline)
+	log.Println("gitlab pipeline：", gitlabPipeline)
 	if gitlabPipeline.Id != 0 && gitlabPipeline.Status == "pending" {
-		beego.Info("gitlab pipeline create success")
+		log.Println("gitlab pipeline create success")
 		return true
 	}
-	beego.Error("gitlab pipeline create fail：", gitlabPipeline)
+	log.Println("ERROR: gitlab pipeline create fail：", gitlabPipeline)
 	return false
 }
 
@@ -284,10 +284,10 @@ func (c *MainController) Json(data map[string]interface{}) {
 	c.ServeJSON()
 }
 func (c *MainController) Info(key, value string) {
-	beego.Info(key, value)
+	log.Println("INFO: ", key, "\t", value)
 }
 func (c *MainController) Error(key, value string) {
-	beego.Error(key, value)
+	log.Println("ERROR: ", key, "\t", value)
 }
 
 type ConfigSlice []*models.Config
