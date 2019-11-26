@@ -1,0 +1,5 @@
+.vscode/
+conf/dev/*.conf
+.idea/
+config.json
+vendor/
