@@ -57,8 +57,13 @@ func init() {
 		}
 	}()
 
+	gitLabSyncTTL := config.GetInt("GitLabSyncTTL")
+	if gitLabSyncTTL == 0 {
+		gitLabSyncTTL = 5
+	}
+
 	go func() {
-		ticker := time.NewTicker(time.Duration(time.Minute * 5))
+		ticker := time.NewTicker(time.Duration(gitLabSyncTTL) * time.Minute)
 		defer ticker.Stop()
 		for {
 			<-ticker.C
