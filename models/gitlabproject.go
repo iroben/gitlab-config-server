@@ -23,8 +23,8 @@ type GitlabPermissions struct {
 }
 
 func (g GitlabPermissions) CheckAccess() bool {
-	return g.ProjectAccess.AccessLevel >= DeveloperAccess ||
-		g.GroupAccess.AccessLevel >= DeveloperAccess
+	return g.ProjectAccess.AccessLevel >= MaintainerAccess ||
+		g.GroupAccess.AccessLevel >= MaintainerAccess
 }
 
 type GitlabProject struct {

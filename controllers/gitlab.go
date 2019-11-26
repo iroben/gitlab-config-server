@@ -29,12 +29,12 @@ func (c *GitLabController) Projects() {
 }
 
 func (c *GitLabController) Login() {
-	log.Println(config.GetString("GitLabDomain") +
+	log.Println(GitLabDomain +
 		fmt.Sprintf("/oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=api",
 			config.GetString("GitLabClientId"),
 			url.QueryEscape(config.GetString("domain")+"/gitlab/callback")))
 
-	c.Redirect(config.GetString("GitLabDomain")+
+	c.Redirect(GitLabDomain+
 		fmt.Sprintf("/oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=api",
 			config.GetString("GitLabClientId"),
 			url.QueryEscape(config.GetString("domain")+"/gitlab/callback")), 302)
@@ -50,7 +50,7 @@ func (c *GitLabController) Callback() {
 	params.Add("client_secret", config.GetString("GitLabClientSecret"))
 	params.Add("grant_type", "authorization_code")
 	params.Add("redirect_uri", config.GetString("domain")+"/gitlab/callback")
-	resp, err := client.Post(config.GetString("GitLabDomain")+path, "application/x-www-form-urlencoded", strings.NewReader(params.Encode()))
+	resp, err := client.Post(GitLabDomain+path, "application/x-www-form-urlencoded", strings.NewReader(params.Encode()))
 	if err != nil {
 		log.Println("err: ", err)
 		return
@@ -75,7 +75,7 @@ func (c *GitLabController) Callback() {
 	}
 
 	// 登录成功后同步一次gitlab信息
-	go c.SyncGitlab()
+	go SyncGitlab(c.GitLabAccessToken)
 
 	user.ClientIp = c.Ctx.Input.IP()
 	userbt, _ := json.Marshal(user)

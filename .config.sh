@@ -13,6 +13,7 @@ configs:
     - GitLabClientSecret
     - GitLabDomain
     - GitLabToken
+    - GitLabSyncTTL
     - Graceful
     - apiToken
     - appname

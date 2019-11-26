@@ -4,9 +4,9 @@
 配置服务的由来，请看这篇文章，[一个简单的基于gitlab的配置服务
 ](https://juejin.im/post/5dc0036cf265da4d4704246a)。
 
-[前端项目](https://gitlab.dreamdev.cn/ebag/gitlab-config-web)
+[前端项目](https://github.com/iroben/gitlab-config-web)
 
-[API接口](https://gitlab.dreamdev.cn/ebag/gitlab-config-server)
+[API接口](https://github.com/iroben/gitlab-config-server)
 
 ## 安装
 > 1. `conf/dev`下添加`app.conf`配置文件，配置项说明看后面
@@ -22,7 +22,7 @@
 
 ## .config.sh 说明
 
-[.config.sh 说明](https://gitlab.dreamdev.cn/ebag/gitlab-config-server/blob/test/config.MD)
+[.config.sh 说明](https://github.com/iroben/gitlab-config-server/blob/master/config.MD)
 
 
 ## app.conf说明
