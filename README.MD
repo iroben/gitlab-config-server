@@ -18,7 +18,7 @@
 ## 注意
 > 1. 第一次启动`API`或者`Web`的时候，需要手动编辑`app.conf`,`config.js`，等服务启动成功后，就可以利用配置服务自举。
 > 2. 修改`.config.sh`的`${GITLAB_CONFIG_SERVER}`为`${API}/v1/generate`，或者设置`CI`的`Variables`，然后运行`./.config.sh > conf/dev/app.conf`。
-> 3. 配置编辑修改权限是基于`gitlab`的用户在这个项目权限来的，只有`MaintainerAccess`用户有编辑、删除权限，其它用户只可以查看
+> 3. 配置编辑、删除权限是基于`gitlab`的用户在这个项目权限来的，只有`MaintainerAccess`用户有编辑、删除权限，其它用户只可以查看
 > 4. 项目信息会在每个用户登录后同步一次，服务器每`5`分钟同步一次，可以修改`GitLabSyncTTL`配置来设置同步时间，单位是`分钟`
 
 ## .config.sh 说明
