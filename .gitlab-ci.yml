@@ -52,6 +52,7 @@ deploy_test:
 
 build_master:
   stage: build
+  image: golang:1.13
   script:
     - chmod a+x .config.sh
     - ./.config.sh
@@ -61,6 +62,7 @@ build_master:
 
 build_tag:
   stage: build
+  image: golang:1.13
   script:
     - chmod a+x .config.sh
     - ./.config.sh
