@@ -39,8 +39,6 @@ deploy_test:
     - rsync -avz -e 'ssh -p 1078' conf "$TEST_DEPLOY_USER"@"$TEST_DEPLOY_HOST":/data/mygo/src/$CI_PROJECT_NAME
     - ssh -p 1078 -t "$TEST_DEPLOY_USER"@"$TEST_DEPLOY_HOST" << EOF
     - cd /data/mygo/src/$CI_PROJECT_NAME
-    - mkdir -p log
-    - export DREAMENV=TEST
     - ./migrate &>> migrate.log
     - /usr/sbin/pidof $CI_PROJECT_NAME && /usr/sbin/pidof $CI_PROJECT_NAME | xargs kill -HUP
     - /usr/sbin/pidof $CI_PROJECT_NAME || (nohup ./$CI_PROJECT_NAME &>> out.log &)
