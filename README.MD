@@ -20,6 +20,7 @@
 > 2. 修改`.config.sh`的`${GITLAB_CONFIG_SERVER}`为`${API}/v1/generate`，或者设置`CI`的`Variables`，然后运行`./.config.sh > conf/dev/app.conf`。
 > 3. 配置编辑、删除权限是基于`gitlab`的用户在这个项目权限来的，只有`MaintainerAccess`用户有编辑、删除权限，其它用户只可以查看
 > 4. 项目信息会在每个用户登录后同步一次，服务器每`5`分钟同步一次，可以修改`GitLabSyncTTL`配置来设置同步时间，单位是`分钟`
+> 5. `.gitlib-ci.yml`的`deploy_test`根据自己实际情况修改，直接在`gitlab`上跑应该是跑不通过的。
 
 ## .config.sh 说明
 
