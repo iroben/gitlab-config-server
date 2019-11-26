@@ -58,7 +58,7 @@ func init() {
 	}()
 
 	go func() {
-		ticker := time.NewTicker(time.Duration(time.Second * 5))
+		ticker := time.NewTicker(time.Duration(time.Minute * 5))
 		defer ticker.Stop()
 		for {
 			<-ticker.C
