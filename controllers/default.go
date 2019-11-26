@@ -13,6 +13,7 @@ import (
 	"gitlab-config-server/services"
 	"log"
 	"io/ioutil"
+	"time"
 )
 
 const (
@@ -53,6 +54,17 @@ func init() {
 	go func() {
 		for configs := range configsChan {
 			updateDependentProject(configs)
+		}
+	}()
+
+	go func() {
+		ticker := time.NewTicker(time.Duration(time.Second * 5))
+		defer ticker.Stop()
+		for {
+			<-ticker.C
+			// 5分钟同步一次Gitlab项目信息
+			log.Println("SyncGitlab ......")
+			SyncGitlab(GitLabToken)
 		}
 	}()
 }
@@ -112,10 +124,13 @@ func updateDependentProject(configs []MidifyConfigs) {
 		if !hasTag || len(configProject.Tags) == 0 {
 			continue
 		}
-		if CreatePipeline(projectId, configProject.Tags[0]) {
+		/**
+		如果tag更新了，默认更新依赖项目的最新tag，如果要优先更新同名tag，把下面这段注释取消了
+		 */
+		/*if CreatePipeline(projectId, configProject.Tags[0]) {
 			// 如果tag值修改了，优先更新该配置所在项目的最新tag的同名tag，成功就返回
 			continue
-		}
+		}*/
 		// 如果失败，则更新依赖项目的最新tag
 		project := (&models.GitlabProject{
 			Id: projectId,
@@ -195,7 +210,6 @@ type MainController struct {
 //获取用户信息
 
 func (c *MainController) UserInfo() {
-	go c.SyncGitlab()
 	c.Json(map[string]interface{}{
 		"statusCode": RESP_OK,
 		"data":       c.User,
@@ -282,13 +296,11 @@ func (c ConfigSlice) Swap(i, j int) {
 func (c ConfigSlice) Less(i, j int) bool {
 	return c[i].Key < c[j].Key
 }
-func (c *MainController) SyncGitlab() {
-	if c.GitLabAccessToken == "" {
-		return
-	}
+
+func SyncGitlab(token string) {
 	services.GitLab{
-		Domain: config.GetString("GitLabDomain"),
-		Token:  c.GitLabAccessToken,
+		Domain: GitLabDomain,
+		Token:  token,
 	}.Projects()
 
 }
@@ -296,7 +308,7 @@ func (c *MainController) CheckProjectPermission(projectId int) bool {
 	hasPermission := false
 	project := services.GitLab{
 		Token:  c.GitLabAccessToken,
-		Domain: config.GetString("GitLabDomain"),
+		Domain: GitLabDomain,
 	}.Project(projectId)
 	if project != nil {
 		hasPermission = project.Permissions.CheckAccess()
