@@ -202,6 +202,13 @@ func (c *Config) Yml() {
 		})
 		return
 	}
+
+	if !c.CheckProjectPermission(params.ProjectId) {
+		c.Json(map[string]interface{}{
+			"statusCode": RESP_NO_ACCESS,
+		})
+		return
+	}
 	var yamlData map[string]map[string]string
 	err := yaml.Unmarshal([]byte(params.Yml), &yamlData)
 	if err != nil {
