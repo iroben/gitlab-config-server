@@ -62,6 +62,19 @@ func (m GitlabProject) FindAll() []*GitlabProject {
 	}
 	return retVal
 }
+
+func (m GitlabProject) FindByIds(projectIds []int) []*GitlabProject {
+	var retVal []*GitlabProject
+	if err := DB.Where("id IN (?)", projectIds).Find(&retVal).Error; err != nil {
+		m.Error(err)
+		return nil
+	}
+	for _, val := range retVal {
+		val.UnMarshal()
+	}
+	return retVal
+}
+
 func (m *GitlabProject) Find() *GitlabProject {
 	var retVal GitlabProject
 	if err := DB.Where("id=?", m.Id).First(&retVal).Error; err != nil {

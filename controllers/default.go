@@ -310,6 +310,10 @@ func SyncGitlab(token string) {
 
 }
 func (c *MainController) CheckProjectPermission(projectId int) bool {
+	// 管理员拥有所有权限
+	if c.User.IsAdmin {
+		return true
+	}
 	hasPermission := false
 	project := services.GitLab{
 		Token:  c.GitLabAccessToken,
