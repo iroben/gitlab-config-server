@@ -1,0 +1,1 @@
+ALTER  TABLE  `gitlab_project` ADD  COLUMN `group` VARCHAR(64);
