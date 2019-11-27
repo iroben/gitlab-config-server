@@ -22,10 +22,20 @@ type GitLabController struct {
 获取项目信息
  */
 func (c *GitLabController) Projects() {
+	if c.User.IsAdmin {
+		c.Json(map[string]interface{}{
+			"statusCode": RESP_OK,
+			"data":       models.GitlabProject{}.FindAll(),
+		})
+		return
+	}
 	c.Json(map[string]interface{}{
 		"statusCode": RESP_OK,
-		"data":       models.GitlabProject{}.FindAll(),
+		"data": models.UserProject{
+			UserId: c.User.Id,
+		}.UserProjects(),
 	})
+
 }
 
 func (c *GitLabController) Login() {

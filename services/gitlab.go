@@ -7,6 +7,7 @@ import (
 	"gitlab-config-server/models"
 	"encoding/json"
 	"strconv"
+	"gitlab-config-server/config"
 )
 
 type GitLab struct {
@@ -79,8 +80,11 @@ func (g GitLab) Project(projectId int) *models.GitlabProject {
 	}
 	return &project
 }
+
 func (g GitLab) Projects() {
+
 	page := 1
+	projects := make([]*models.GitlabProject, 0)
 	for {
 
 		log.Println("请求第" + strconv.Itoa(page) + "页项目信息")
@@ -101,7 +105,7 @@ func (g GitLab) Projects() {
 		}
 		// 没有项目信息了
 		if len(gitlabProjects) == 0 {
-			return
+			break
 		}
 		go func(_gitlabProjects []*models.GitlabProject) {
 			for _, project := range _gitlabProjects {
@@ -112,6 +116,18 @@ func (g GitLab) Projects() {
 				project.Save()
 			}
 		}(gitlabProjects)
+		projects = append(projects, gitlabProjects...)
 		page += 1
+	}
+	// GitLab创建的token不保存用户，项目信息
+	if config.GetString("GitLabToken") != g.Token {
+		user := (&models.User{}).GetUserInfo(g.Token)
+		if user == nil {
+			log.Println("ERROR GetUserInfo fail")
+			return
+		}
+		models.UserProject{
+			UserId: user.Id,
+		}.SaveProjects(projects)
 	}
 }
