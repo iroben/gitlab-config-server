@@ -3,6 +3,7 @@ package configformat
 import (
 	"errors"
 	"gitlab-config-server/models"
+	"sync"
 )
 
 /*
@@ -31,6 +32,22 @@ const (
 	FORMAT_INI          = "ini"
 	FORMAT_YML          = "yml"
 )
+
+var formatMap map[string]ConfigFormat
+var lock sync.Mutex
+
+func init() {
+	formatMap = make(map[string]ConfigFormat)
+	formatMap[FORMAT_JS] = &JsFormat{}
+	formatMap[FORMAT_JSON] = &JsonFormat{}
+	formatMap[FORMAT_INI] = &IniFormat{}
+	formatMap[FORMAT_YML] = &YmlFormat{}
+}
+func SetFormatHandle(formatType string, handle ConfigFormat) {
+	lock.Lock()
+	defer lock.Unlock()
+	formatMap[formatType] = handle
+}
 
 type ConfigFormat interface {
 	Format(*YmlData, string) (string, error)
@@ -140,17 +157,8 @@ func (c *YmlData) Tree() {
 获取格式化数据
 */
 func Format(data *YmlData, projectName string) (string, error) {
-	var convert ConfigFormat
-	switch data.Format {
-	case FORMAT_JS:
-		convert = &JsFormat{}
-	case FORMAT_JSON:
-		convert = &JsonFormat{}
-	case FORMAT_INI:
-		convert = &IniFormat{}
-	case FORMAT_YML:
-		convert = &YmlFormat{}
-	default:
+	convert, ok := formatMap[data.Format]
+	if !ok {
 		return "", errors.New("Format not implement")
 	}
 	return convert.Format(data, projectName)
