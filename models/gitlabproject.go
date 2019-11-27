@@ -27,16 +27,24 @@ func (g GitlabPermissions) CheckAccess() bool {
 		g.GroupAccess.AccessLevel >= MaintainerAccess
 }
 
+type ProjectNameSpace struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+	Kind string `json:"kind"`
+}
+
 type GitlabProject struct {
 	BaseModel
 	Id          int               `gorm:"column:id"`
 	Name        string            `gorm:"column:name"`
 	Description string            `gorm:"column:description"`
+	Group       string            `gorm:"column:group"`
 	BranchesStr string            `gorm:"column:branches" json:"-"`
 	TagsStr     string            `gorm:"column:tags" json:"-"`
 	Branches    []string          `gorm:"-""`
 	Tags        []string          `gorm:"-"`
 	Permissions GitlabPermissions `gorm:"-" json:"permissions"`
+	NameSpace   ProjectNameSpace  `gorm:"-" json:"namespace"`
 }
 
 func (m *GitlabProject) TableName() string {

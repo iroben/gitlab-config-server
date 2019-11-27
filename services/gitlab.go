@@ -108,6 +108,7 @@ func (g GitLab) Projects() {
 				projectId := strconv.Itoa(project.Id)
 				project.Branches = g.Branches(projectId)
 				project.Tags = g.Tags(projectId)
+				project.Group = project.NameSpace.Name
 				project.Save()
 			}
 		}(gitlabProjects)
