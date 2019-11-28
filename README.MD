@@ -8,6 +8,8 @@
 
 [API接口](https://github.com/iroben/gitlab-config-server)
 
+[GitLab设置请看这里](https://juejin.im/post/5dde281be51d45330766503f)
+
 ## 安装
 > 1. `conf/dev`下添加`app.conf`配置文件，配置项说明看后面
 > 2. `go mod vendor` 安装依赖
