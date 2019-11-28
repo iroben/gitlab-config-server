@@ -126,12 +126,8 @@ func (m *GitlabProject) Save() (*GitlabProject, bool) {
 		return nil, false
 	}
 	if retVal.Id != 0 {
-		// 分支只做追加，不做删除，怕有其它项目依赖
-		//checkBranch(m, retVal)
-		//checkTag(m, retVal)
-		m.Marshal()
 		retVal.UnMarshal()
-		return &retVal, m.Update()
+		return &retVal, true
 	}
 	m.Marshal()
 	if err := DB.Create(m).Error; err != nil {
