@@ -41,7 +41,7 @@ type GitlabProject struct {
 	Group       string            `gorm:"column:group"`
 	BranchesStr string            `gorm:"column:branches" json:"-"`
 	TagsStr     string            `gorm:"column:tags" json:"-"`
-	Branches    []string          `gorm:"-""`
+	Branches    []string          `gorm:"-"`
 	Tags        []string          `gorm:"-"`
 	Permissions GitlabPermissions `gorm:"-" json:"permissions"`
 	NameSpace   ProjectNameSpace  `gorm:"-" json:"namespace"`

@@ -7,16 +7,26 @@ import (
 	"time"
 )
 
+/**
+精简版Gitlab项目信息
+ */
+type Project struct {
+	Id          int
+	Name        string
+	Description string
+}
+
 type Config struct {
 	BaseModel
-	Id           int               `gorm:"column:id;primary_key"`
-	ProjectId    int               `gorm:"column:project_id"`
-	Key          string            `gorm:"column:key"`
-	Valstr       string            `gorm:"column:val" json:"-"`
-	Val          map[string]string `gorm:"-"`
-	Description  string            `gorm:"column:description"`
-	DependentStr string            `gorm:"column:dependent" json:"-"`
-	Dependent    []int             `gorm:"-" json:"-"`
+	Id                int               `gorm:"column:id;primary_key"`
+	ProjectId         int               `gorm:"column:project_id"`
+	Key               string            `gorm:"column:key"`
+	Valstr            string            `gorm:"column:val" json:"-"`
+	Val               map[string]string `gorm:"-"`
+	Description       string            `gorm:"column:description"`
+	DependentStr      string            `gorm:"column:dependent" json:"-"`
+	Dependent         []int             `gorm:"-" json:"-"`
+	DependentProjects []Project
 }
 
 func (m *Config) TableName() string {
@@ -187,6 +197,12 @@ func (m *Config) Delete(user *User) bool {
 func formatConfig(configs []*Config) {
 	for _, v := range configs {
 		v.UnMarshal()
+		for _, pid := range v.Dependent {
+			if project, ok := GitLabProjects[pid]; ok {
+				v.DependentProjects = append(v.DependentProjects, project)
+			}
+
+		}
 	}
 }
 func (m *Config) GetConfigByProjectId() []*Config {

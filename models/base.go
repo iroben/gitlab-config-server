@@ -6,6 +6,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"sync"
 )
 
 type BaseModel struct {
@@ -20,7 +21,11 @@ type Operation struct {
 	Delete bool `json:"delete"`
 }
 
-var DB *gorm.DB
+var (
+	DB             *gorm.DB
+	GitLabProjects map[int]Project
+	lock           sync.Mutex
+)
 
 func init() {
 	dbConfig := config.GetDbConfig()
@@ -32,6 +37,21 @@ func init() {
 	}
 	if config.ENV != "PROD" {
 		DB.LogMode(true)
+	}
+	GitLabProjects = make(map[int]Project)
+	var project GitlabProject
+	project.CacheProjects(project.FindAll())
+}
+func (m BaseModel) CacheProjects(projects []*GitlabProject) {
+	// 如果是GitLab管理员创建的token，则缓存一份项目信息，用于配置模型用
+	lock.Lock()
+	defer lock.Unlock()
+	for _, project := range projects {
+		GitLabProjects[project.Id] = Project{
+			Id:          project.Id,
+			Name:        project.Name,
+			Description: project.Description,
+		}
 	}
 }
 func (m *BaseModel) Error(e error) {
