@@ -1,5 +1,8 @@
 # GitLab配置管理API
 
+# 项目效果
+![项目效果](https://user-gold-cdn.xitu.io/2019/11/29/16eb503c8adbc967?w=1024&h=639&f=gif&s=2885973)
+
 ## 介绍
 配置服务的由来，请看这篇文章，[一个简单的基于gitlab的配置服务
 ](https://juejin.im/post/5dc0036cf265da4d4704246a)。
