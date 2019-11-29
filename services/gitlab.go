@@ -119,15 +119,15 @@ func (g GitLab) Projects() {
 		projects = append(projects, gitlabProjects...)
 		page += 1
 	}
-	// GitLab创建的token不保存用户，项目信息
-	if config.GetString("GitLabToken") != g.Token {
-		user := (&models.User{}).GetUserInfo(g.Token)
-		if user == nil {
-			log.Println("ERROR GetUserInfo fail")
-			return
-		}
-		models.UserProject{
-			UserId: user.Id,
-		}.SaveProjects(projects)
+
+	user := (&models.User{}).GetUserInfo(g.Token)
+	if user == nil {
+		log.Println("ERROR GetUserInfo fail")
+		return
 	}
+
+	models.UserProject{
+		UserId: user.Id,
+	}.SaveProjects(projects, config.GetString("GitLabToken") != g.Token)
+
 }

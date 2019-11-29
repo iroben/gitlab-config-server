@@ -24,7 +24,12 @@ func (m UserProject) UserProjects() []*GitlabProject {
 	return GitlabProject{}.FindByIds(projectIds)
 
 }
-func (m UserProject) SaveProjects(projects []*GitlabProject) bool {
+func (m UserProject) SaveProjects(projects []*GitlabProject, isCache bool) bool {
+	// GitLab创建的token只缓存项目信息，不保存用户，项目信息
+	if isCache {
+		m.CacheProjects(projects)
+		return true
+	}
 	tx := DB.Begin()
 	err := tx.Where("user_id=?", m.UserId).Delete(UserProject{}).Error
 	if err != nil {
