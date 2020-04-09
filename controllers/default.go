@@ -2,18 +2,19 @@ package controllers
 
 import (
 	"encoding/json"
-	"net/http"
 	"gitlab-config-server/config"
 	"gitlab-config-server/helper"
 	"gitlab-config-server/models"
+	"net/http"
 	"strconv"
 
-	"github.com/astaxie/beego"
 	"bytes"
 	"gitlab-config-server/services"
-	"log"
 	"io/ioutil"
+	"log"
 	"time"
+
+	"github.com/astaxie/beego"
 )
 
 const (
@@ -42,7 +43,7 @@ var (
 )
 
 type MidifyConfigs struct {
-	ConfigId int ``
+	ConfigId int
 	Branches []string
 	HasTag   bool
 }
@@ -131,7 +132,7 @@ func updateDependentProject(configs []MidifyConfigs) {
 		}
 		/**
 		如果tag更新了，默认更新依赖项目的最新tag，如果要优先更新同名tag，把下面这段注释取消了
-		 */
+		*/
 		/*if CreatePipeline(projectId, configProject.Tags[0]) {
 			// 如果tag值修改了，优先更新该配置所在项目的最新tag的同名tag，成功就返回
 			continue
