@@ -7,8 +7,8 @@ build_test:
   stage: build
   image: golang:1.13
   script:
-    - chmod a+x .config.sh
-    - ./.config.sh > conf/dev/app.conf
+    # - chmod a+x .config.sh
+    # - ./.config.sh > conf/dev/app.conf
     - export GO111MODULE=on
     - export GOPROXY=https://goproxy.cn,direct
     - go mod vendor
@@ -29,15 +29,15 @@ deploy_test:
   image: sebble/deploy
   script:
     - mkdir -p ~/.ssh
-    - echo "$TEST_DEPLOY_SSH" >> ~/.ssh/id_dsa
+    - echo "$GITLAB_DEPLOY_SSH" >> ~/.ssh/id_dsa
     - chmod 600 ~/.ssh/id_dsa
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-    - ssh -p 1078 -t "$TEST_DEPLOY_USER"@"$TEST_DEPLOY_HOST" "mkdir -p /data/mygo/src/$CI_PROJECT_NAME"
-    - rsync -avz -e 'ssh -p 1078' $CI_PROJECT_NAME "$TEST_DEPLOY_USER"@"$TEST_DEPLOY_HOST":/data/mygo/src/$CI_PROJECT_NAME
-    - rsync -avz -e 'ssh -p 1078' migrate "$TEST_DEPLOY_USER"@"$TEST_DEPLOY_HOST":/data/mygo/src/$CI_PROJECT_NAME
-    - rsync -avz -e 'ssh -p 1078' migration "$TEST_DEPLOY_USER"@"$TEST_DEPLOY_HOST":/data/mygo/src/$CI_PROJECT_NAME
-    - rsync -avz -e 'ssh -p 1078' conf "$TEST_DEPLOY_USER"@"$TEST_DEPLOY_HOST":/data/mygo/src/$CI_PROJECT_NAME
-    - ssh -p 1078 -t "$TEST_DEPLOY_USER"@"$TEST_DEPLOY_HOST" << EOF
+    - ssh -p 1078 -t "$GITLAB_DEPLOY_USER"@"$GITLAB_DEPLOY_HOST" "mkdir -p /data/mygo/src/$CI_PROJECT_NAME"
+    - rsync -avz $CI_PROJECT_NAME "$GITLAB_DEPLOY_USER"@"$GITLAB_DEPLOY_HOST":/data/mygo/src/$CI_PROJECT_NAME
+    - rsync -avz migrate "$GITLAB_DEPLOY_USER"@"$GITLAB_DEPLOY_HOST":/data/mygo/src/$CI_PROJECT_NAME
+    - rsync -avz migration "$GITLAB_DEPLOY_USER"@"$GITLAB_DEPLOY_HOST":/data/mygo/src/$CI_PROJECT_NAME
+    - rsync -avz conf "$GITLAB_DEPLOY_USER"@"$GITLAB_DEPLOY_HOST":/data/mygo/src/$CI_PROJECT_NAME
+    - ssh -t "$GITLAB_DEPLOY_USER"@"$GITLAB_DEPLOY_HOST" << EOF
     - cd /data/mygo/src/$CI_PROJECT_NAME
     - ./migrate &>> migrate.log
     - /usr/sbin/pidof $CI_PROJECT_NAME && /usr/sbin/pidof $CI_PROJECT_NAME | xargs kill -9
@@ -45,8 +45,6 @@ deploy_test:
     - EOF
   only:
     - test
-
-
 
 build_master:
   stage: build
@@ -56,7 +54,6 @@ build_master:
     - ./.config.sh
   only:
     - master
-
 
 build_tag:
   stage: build
