@@ -32,7 +32,7 @@ deploy_test:
     - echo "$GITLAB_DEPLOY_SSH" >> ~/.ssh/id_dsa
     - chmod 600 ~/.ssh/id_dsa
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-    - ssh -p 1078 -t "$GITLAB_DEPLOY_USER"@"$GITLAB_DEPLOY_HOST" "mkdir -p /data/mygo/src/$CI_PROJECT_NAME"
+    - ssh -t "$GITLAB_DEPLOY_USER"@"$GITLAB_DEPLOY_HOST" "mkdir -p /data/mygo/src/$CI_PROJECT_NAME"
     - rsync -avz $CI_PROJECT_NAME "$GITLAB_DEPLOY_USER"@"$GITLAB_DEPLOY_HOST":/data/mygo/src/$CI_PROJECT_NAME
     - rsync -avz migrate "$GITLAB_DEPLOY_USER"@"$GITLAB_DEPLOY_HOST":/data/mygo/src/$CI_PROJECT_NAME
     - rsync -avz migration "$GITLAB_DEPLOY_USER"@"$GITLAB_DEPLOY_HOST":/data/mygo/src/$CI_PROJECT_NAME
