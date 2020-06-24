@@ -1,9 +1,9 @@
 package models
 
 import (
-	"gitlab-config-server/helper"
-	"gitlab-config-server/config"
 	"encoding/json"
+	"gitlab-config-server/config"
+	"gitlab-config-server/helper"
 	"log"
 )
 
@@ -31,5 +31,6 @@ func (m *User) GetUserInfo(accessToken string) *User {
 		log.Println("ERROR: 解析用户数据失败：", err.Error())
 		return nil
 	}
+	log.Printf("%+v\n", user)
 	return &user
 }

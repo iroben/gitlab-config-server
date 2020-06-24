@@ -1,13 +1,13 @@
 package services
 
 import (
-	"gitlab-config-server/helper"
-	"log"
-	"io/ioutil"
-	"gitlab-config-server/models"
 	"encoding/json"
-	"strconv"
 	"gitlab-config-server/config"
+	"gitlab-config-server/helper"
+	"gitlab-config-server/models"
+	"io/ioutil"
+	"log"
+	"strconv"
 )
 
 type GitLab struct {
@@ -78,6 +78,7 @@ func (g GitLab) Project(projectId int) *models.GitlabProject {
 		log.Print("项目信息解析失败: ", err)
 		return nil
 	}
+	log.Printf("%+v\n", project)
 	return &project
 }
 
