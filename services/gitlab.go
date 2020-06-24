@@ -96,9 +96,10 @@ func (g GitLab) Projects() {
 			log.Println("请求项目数据失败:", err)
 			return
 		}
-		defer resp.Body.Close()
+
 		bt, _ := ioutil.ReadAll(resp.Body)
-		log.Println(string(bt))
+		resp.Body.Close()
+		// log.Println(string(bt))
 		var gitlabProjects []*models.GitlabProject
 		if err := json.Unmarshal(bt, &gitlabProjects); err != nil {
 			log.Println("项目信息解析失败: ", err)
