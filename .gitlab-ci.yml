@@ -40,8 +40,8 @@ deploy_test:
     - ssh -tt "$GITLAB_DEPLOY_USER"@"$GITLAB_DEPLOY_HOST" << EOF
     - cd /data/mygo/src/$CI_PROJECT_NAME
     - ./migrate &>> migrate.log
-    - //bin/pidof $CI_PROJECT_NAME && //bin/pidof $CI_PROJECT_NAME | xargs kill -9
-    - //bin/pidof $CI_PROJECT_NAME || (nohup ./$CI_PROJECT_NAME &>> out.log &)
+    - /bin/pidof $CI_PROJECT_NAME && /bin/pidof $CI_PROJECT_NAME | xargs kill -9
+    - /bin/pidof $CI_PROJECT_NAME || (nohup ./$CI_PROJECT_NAME &)
     - EOF
   only:
     - test
