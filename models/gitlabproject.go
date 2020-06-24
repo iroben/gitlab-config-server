@@ -127,10 +127,9 @@ func (m *GitlabProject) Save() (*GitlabProject, bool) {
 		return nil, false
 	}
 	if retVal.Id != 0 {
-		retVal.UnMarshal()
-		retVal.Marshal()
-		retVal.Update()
-		return &retVal, true
+		m.Marshal()
+		m.Update()
+		return m, true
 	}
 	m.Marshal()
 	if err := DB.Create(m).Error; err != nil {
