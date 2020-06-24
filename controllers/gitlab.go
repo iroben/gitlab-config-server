@@ -1,17 +1,17 @@
 package controllers
 
 import (
-	"gitlab-config-server/config"
-	"fmt"
-	"net/url"
-	"gitlab-config-server/helper"
-	"strings"
 	"encoding/json"
-	"log"
-	"io/ioutil"
-	"gitlab-config-server/services"
-	"time"
+	"fmt"
+	"gitlab-config-server/config"
+	"gitlab-config-server/helper"
 	"gitlab-config-server/models"
+	"gitlab-config-server/services"
+	"io/ioutil"
+	"log"
+	"net/url"
+	"strings"
+	"time"
 )
 
 type GitLabController struct {
@@ -20,7 +20,7 @@ type GitLabController struct {
 
 /**
 获取项目信息
- */
+*/
 func (c *GitLabController) Projects() {
 	if c.User.IsAdmin {
 		c.Json(map[string]interface{}{
@@ -62,6 +62,7 @@ func (c *GitLabController) Callback() {
 	params.Add("redirect_uri", config.GetString("domain")+"/gitlab/callback")
 	resp, err := client.Post(GitLabDomain+path, "application/x-www-form-urlencoded", strings.NewReader(params.Encode()))
 	if err != nil {
+		c.Redirect(config.GetString("gitlab-config-web.domain")+"?msg=get gitlab user info error", 302)
 		log.Println("err: ", err)
 		return
 	}
@@ -70,9 +71,11 @@ func (c *GitLabController) Callback() {
 	var oauth OAuthResp
 	if err := json.Unmarshal(bt, &oauth); err != nil {
 		log.Println("decode fail: ", err)
+		c.Redirect(config.GetString("gitlab-config-web.domain")+"?msg=get gitlab user info error", 302)
 		return
 	}
 	if oauth.AccessToken == "" {
+		c.Redirect(config.GetString("gitlab-config-web.domain")+"?msg=get gitlab user info error", 302)
 		return
 	}
 	token := helper.GetGuid()
@@ -81,6 +84,7 @@ func (c *GitLabController) Callback() {
 	user := c.GetUserInfo()
 	if user == nil {
 		log.Println("get gitlab user info error")
+		c.Redirect(config.GetString("gitlab-config-web.domain")+"?msg=get gitlab user info error", 302)
 		return
 	}
 
@@ -89,7 +93,7 @@ func (c *GitLabController) Callback() {
 
 	user.ClientIp = c.Ctx.Input.IP()
 	userbt, _ := json.Marshal(user)
-	services.Redis.Set("sid:"+token, string(userbt), time.Second*3600)
-	services.Redis.Set("sid:"+token+":gitlab", string(bt), time.Second*3600)
+	services.Redis.Set("sid:"+token, string(userbt), time.Second*86400)
+	services.Redis.Set("sid:"+token+":gitlab", string(bt), time.Second*86400)
 	c.Redirect(config.GetString("gitlab-config-web.domain")+"?token="+token, 302)
 }
