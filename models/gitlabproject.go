@@ -128,8 +128,16 @@ func (m *GitlabProject) Save() (*GitlabProject, bool) {
 	}
 	if retVal.Id != 0 {
 		m.Marshal()
-		m.Update()
-		return m, true
+		if m.BranchesStr != "" {
+			retVal.BranchesStr = m.BranchesStr
+			retVal.TagsStr = m.TagsStr
+			retVal.Group = m.Group
+			retVal.Description = m.Description
+			retVal.Name = m.Name
+			retVal.Update()
+		}
+		retVal.UnMarshal()
+		return &retVal, true
 	}
 	m.Marshal()
 	if err := DB.Create(m).Error; err != nil {
