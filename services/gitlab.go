@@ -98,14 +98,15 @@ func (g GitLab) Projects() {
 		}
 		defer resp.Body.Close()
 		bt, _ := ioutil.ReadAll(resp.Body)
-		//log.Println(string(bt))
+		log.Println(string(bt))
 		var gitlabProjects []*models.GitlabProject
 		if err := json.Unmarshal(bt, &gitlabProjects); err != nil {
-			log.Print("项目信息解析失败: ", err)
+			log.Println("项目信息解析失败: ", err)
 			return
 		}
 		// 没有项目信息了
 		if len(gitlabProjects) == 0 {
+			log.Println("没有项目信息了: ", page)
 			break
 		}
 		go func(_gitlabProjects []*models.GitlabProject) {
