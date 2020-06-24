@@ -128,6 +128,7 @@ func (m *GitlabProject) Save() (*GitlabProject, bool) {
 	}
 	if retVal.Id != 0 {
 		retVal.UnMarshal()
+		retVal.Marshal()
 		retVal.Update()
 		return &retVal, true
 	}
