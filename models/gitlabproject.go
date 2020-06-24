@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
 	"encoding/json"
+
+	"github.com/jinzhu/gorm"
 )
 
 const (
@@ -127,6 +128,7 @@ func (m *GitlabProject) Save() (*GitlabProject, bool) {
 	}
 	if retVal.Id != 0 {
 		retVal.UnMarshal()
+		retVal.Update()
 		return &retVal, true
 	}
 	m.Marshal()
@@ -187,7 +189,7 @@ func (m GitlabProject) GetProjectByName() *GitlabProject {
 
 /**
 根据.config.sh传过来的branch寻找对应的分支，主要是处理tag的，如果branch是tag，则返回tag字符串
- */
+*/
 func (m GitlabProject) GetBranch(branch string) string {
 	for _, _branch := range m.Branches {
 		if _branch == branch {
