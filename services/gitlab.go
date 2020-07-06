@@ -131,6 +131,6 @@ func (g GitLab) Projects() {
 
 	models.UserProject{
 		UserId: user.Id,
-	}.SaveProjects(projects, config.GetString("GitLabToken") != g.Token)
+	}.SaveProjects(projects, config.GetString("GitLabToken") == g.Token)
 
 }
